@@ -20,6 +20,9 @@
     "url": "https://github.com/lriveras/fablr/issues"
   },
   "homepage": "https://github.com/lriveras/fablr#readme",
+  "engines": {
+    "node": "6.9.2"
+  },
   "dependencies": {
     "compression": "^1.6.2",
     "cors": "^2.8.1",

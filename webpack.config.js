@@ -1,9 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
 
-var output = "build";
-var resources = "static";
-var server = "server";
 
 module.exports = {
   entry: './app/fablr-app.jsx',
