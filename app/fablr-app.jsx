@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Home from './features/home/Home.jsx';
+import reducers from './reducers.js';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import { Router, Route, Link, browserHistory  } from 'react-router'
-
-
 
 window.fbAsyncInit = function () {
     FB.init({
@@ -17,11 +16,7 @@ window.fbAsyncInit = function () {
 };
 
 let load = ()=>{
-    const store = createStore((state, action)=>{
-        if(action.type==='LOGIN') 
-            return Object.assign({},state, {fbLoaded:true});
-        else return Object.assign({}, state);
-    });
+    const store = createStore(reducers);
     ReactDOM.render(
         <Provider store={store}>
             <Router history={browserHistory}>

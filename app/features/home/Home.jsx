@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { togglefbLoaded } from './home-actions';
+import { bindActionCreators } from 'redux'
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props);
   }
   componentWillMount(props){
 
   }
   componentDidMount() {
-    console.log("mounted");
+    
   }
   render() {
       if(this.props.fbLoaded){
@@ -19,36 +22,34 @@ class Home extends React.Component {
           return <button onClick={this.props.onPClick}>loading...</button>;
       }
   }
-
-//   static propTypes = {
-//     fbLoaded: PropTypes.bool.isRequired,
-//     authenticated: PropTypes.bool.isRequired,
-//   }
 }
+
+// Home.propTypes = {
+//   fbLoaded: PropTypes.bool.isRequired,
+//   authenticated: PropTypes.bool.isRequired,
+//   text: PropTypes.string.isRequired
+// }
 
 const initialState = {fbLoaded: false, authenticated: false};
 
-const togglefbLoaded = () => {
-    return {type: 'LOGIN'}
-};
-
-
-const mapStateToProps = (state = initialState) => ({
-  fbLoaded: state.fbLoaded,
-  authenticated: state.authenticated
+const mapStateToProps = ({fbLoaded = initialState.fbLoaded, authenticated = initialState.authenticated}) => ({
+  fbLoaded: fbLoaded,
+  authenticated: authenticated
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onPClick: () => {
-      dispatch(togglefbLoaded())
-    }
-  }
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  const { fbLoaded = false, authenticated = false } = stateProps;
+  const { dispatch } = dispatchProps;
+  const actions = {
+      onPClick: () => dispatch(togglefbLoaded(fbLoaded))
+  };
+  return Object.assign({},stateProps, ownProps, actions);
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null,
+  mergeProps
 )(Home)
 
 
