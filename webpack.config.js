@@ -1,10 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var __builddir = path.join("server","static","build");
 
 module.exports = {
   entry: './app/fablr-app.jsx',
-  output: { path: path.join("server","static","build"),
+  output: { path: __builddir,
     filename: 'fablr.js'
   },
   module: {
@@ -20,7 +21,7 @@ module.exports = {
     {
       test: /.js$/, 
       loaders: [ "babel-loader", "eslint-loader" ], 
-      exclude: /(node_modules|build)/
+      exclude: /(node_modules|__builddir)/
     }
     ]
   },
