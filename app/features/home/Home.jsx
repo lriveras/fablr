@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { togglefbLoaded } from './home-actions';
 import { bindActionCreators } from 'redux'
+import { Router, Route, Link, browserHistory } from 'react-router'
+
 
 class Home extends React.Component {
   constructor(props) {
@@ -19,7 +21,7 @@ class Home extends React.Component {
       if(this.props.fbLoaded){
           return <button onClick={this.props.onPClick}>Welcome to Fablr</button>;
       } else {
-          return <button onClick={this.props.onPClick}>loading...</button>;
+          return <p><Link to={`/home`}>nooooo</Link></p>;//<button onClick={this.props.onPClick}>loading...</button>;
       }
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Home from './features/home/Home.jsx';
+import FablrAppBar from './features/fablr-app-bar/FablrAppBar.jsx';
 import reducers from './reducers.js';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
@@ -16,12 +17,14 @@ window.fbAsyncInit = function () {
 };
 
 let load = ()=>{
-    const store = createStore(reducers);
+    const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
     ReactDOM.render(
         <Provider store={store}>
             <Router history={browserHistory}>
-                <Route path="/" component={Home}>
+                <Route path="/" component={FablrAppBar}>
+                    <Route path="hello" component={Home}>
 
+                    </Route>
                 </Route>
             </Router>
         </Provider>,
