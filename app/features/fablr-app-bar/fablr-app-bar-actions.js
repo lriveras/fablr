@@ -1,6 +1,7 @@
-const onLogin = () => {
+const onLogin = (session) => {
   return {
     type: 'LOGIN', 
+    session
   }
 };
 
