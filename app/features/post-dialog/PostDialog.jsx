@@ -67,7 +67,7 @@ class PostDialog extends React.Component {
             post.published = false;
         }
         const callback = (response) => {
-            if (response && !response.error) this.props.posted();
+            if (response && !response.error) this.props.posted(response);
             else this.props.postError("Oops! Something went wrong while posting to Facebook, please try again.");
         }
         FB.api(uri, "POST", post, callback);
@@ -119,11 +119,13 @@ const PostDialogActions = ({pdPosting, closePostDialog}, onValidate) => [
         />,
 ];
 
-const PostDialogSnackbar = ({pdErrorMessage, dismissPostError}) => {
-    return (!pdErrorMessage || pdErrorMessage == "") ? <div></div> :
+const PostDialogSnackbar = ({pdErrorMessage, dismissPostError, pdPost, pdPage}) => {
+    let posted = (pdPost && pdPost.id), error = (pdErrorMessage && pdErrorMessage != "")
+    let message = error ? pdErrorMessage : posted ? "Posted successfully to Facebook page " + pdPage.name : "";
+    return !error && !posted ? <div></div> :
         <Snackbar
             open={true}
-            message={pdErrorMessage}
+            message={message}
             autoHideDuration={4000}
             onRequestClose={dismissPostError}
             />;

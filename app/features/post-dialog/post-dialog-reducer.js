@@ -41,7 +41,7 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
             return Object.assign({},state, {pdErrorMessage, pdPosting});
         }
         else if(type==='DISMISS_POST_ERROR'){
-            return Object.assign({},state, {pdErrorMessage});
+            return Object.assign({},state, {pdErrorMessage, pdPost});
         }
         else if(type==='FORM_VALIDATED'){
             return Object.assign({},state, {pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError});

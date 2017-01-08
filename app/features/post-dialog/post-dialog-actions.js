@@ -105,6 +105,7 @@ const dismissPostError = () => {
   return {
     type: 'DISMISS_POST_ERROR',
     pdErrorMessage: "",
+    pdPost: {}
   }
 };
 
