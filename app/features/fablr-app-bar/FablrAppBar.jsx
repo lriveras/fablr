@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { onLogin, onLogout } from './fablr-app-bar-actions';
+import { openPostDialog, myPagesLoaded } from '../post-dialog/post-dialog-actions';
+import PostDialog from '../post-dialog/PostDialog.jsx';
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
@@ -29,14 +31,23 @@ class FablrAppBar extends React.Component {
         injectTapEventPlugin();
         this.onLogoutClick = this.onLogoutClick.bind(this);
         this.onLoginCallback = this.onLoginCallback.bind(this);
-
+        this.openDialog = this.openDialog.bind(this);
+        this.loadMyPages = this.loadMyPages.bind(this);
+        this.checkLoginStatus = this.checkLoginStatus.bind(this);
 
     }
     componentWillMount(props) {
-
+        this.checkLoginStatus();
     }
     componentDidMount() {
 
+    }
+    openDialog(){
+        this.props.openPostDialog();
+        FB.api('/me/accounts','GET',{},this.loadMyPages);
+    }
+    loadMyPages(response) {
+        this.props.myPagesLoaded(response.data);
     }
     checkLoginStatus() {
         FB.getLoginStatus(function (response) {
@@ -47,7 +58,6 @@ class FablrAppBar extends React.Component {
         FB.logout(this.props.onLogout);
     }
     onLoginCallback(response) {
-        console.log(response);
         if (response.accessToken) {
             this.props.onLogin(response);
         }
@@ -58,9 +68,7 @@ class FablrAppBar extends React.Component {
             element = <div>
                 <IconMenu
                     iconButtonElement={
-                        <FlatButton
-                            icon={<Avatar src={this.props.session.picture.data.url} />}
-                            label={this.props.session.name} default={true} />
+                        <IconButton><Avatar src={this.props.session.picture.data.url} />{this.props.session.name}</IconButton>
                     }
                     targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -74,7 +82,7 @@ class FablrAppBar extends React.Component {
         else {
             element =
                 <FacebookLogin
-                    appId="1810351719203911"
+                    appId="1816468645258885"
                     size={"small"}
                     textButton={"Login"}
                     icon={"fa-facebook"}
@@ -94,11 +102,19 @@ class FablrAppBar extends React.Component {
                 icon={<Home color={fullWhite} />}
                 labelStyle={{ color: fullWhite, fontSize: 25 }}
                 />;
+        let post =
+            <FlatButton
+                label="Post"
+                labelStyle={{ color: fullWhite }}
+                onTouchTap={this.openDialog}
+                />;
         let element;
         if (this.props.logged) {
             element =
                 <div>
                     {home}
+                    {post}
+                    <PostDialog />
                 </div>;
         }
         else {
@@ -120,7 +136,7 @@ class FablrAppBar extends React.Component {
 
 const initialState = { logged: false };
 
-const mapStateToProps = ({logged = initialState.logged, session}) => ({
+const mapStateToProps = ({appBarReducer:{logged = initialState.logged, session}}) => ({
     logged,
     session
 });
@@ -130,7 +146,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     const { dispatch } = dispatchProps;
     const actions = {
         onLogin: (session) => dispatch(onLogin(session)),
-        onLogout: () => dispatch(onLogout())
+        onLogout: () => dispatch(onLogout()),
+        openPostDialog: () => dispatch(openPostDialog()),
+        myPagesLoaded: (pages) => dispatch(myPagesLoaded(pages))
     };
     return Object.assign({}, stateProps, ownProps, actions, dispatchProps);
 }
