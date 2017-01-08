@@ -1,7 +1,7 @@
-const togglefbLoaded = (fbLoaded) => {
+const togglefbLoaded = () => {
   return {
-    type: 'LOGIN',
-    fbLoaded: !fbLoaded 
+    type: 'HOME',
+    
   }
 };
 

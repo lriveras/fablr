@@ -7,9 +7,6 @@ import PostDialog from '../post-dialog/PostDialog.jsx';
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -33,26 +30,14 @@ class FablrAppBar extends React.Component {
         this.onLoginCallback = this.onLoginCallback.bind(this);
         this.openDialog = this.openDialog.bind(this);
         this.loadMyPages = this.loadMyPages.bind(this);
-        this.checkLoginStatus = this.checkLoginStatus.bind(this);
 
     }
-    componentWillMount(props) {
-        this.checkLoginStatus();
-    }
-    componentDidMount() {
-
-    }
-    openDialog(){
+    openDialog() {
         this.props.openPostDialog();
-        FB.api('/me/accounts','GET',{},this.loadMyPages);
+        FB.api('/me/accounts', 'GET', {}, this.loadMyPages);
     }
     loadMyPages(response) {
         this.props.myPagesLoaded(response.data);
-    }
-    checkLoginStatus() {
-        FB.getLoginStatus(function (response) {
-            console.log(response);
-        });
     }
     onLogoutClick() {
         FB.logout(this.props.onLogout);
@@ -62,81 +47,78 @@ class FablrAppBar extends React.Component {
             this.props.onLogin(response);
         }
     }
-    getRightElement() {
-        let element;
-        if (this.props.logged) {
-            element = <div>
-                <IconMenu
-                    iconButtonElement={
-                        <IconButton><Avatar src={this.props.session.picture.data.url} />{this.props.session.name}</IconButton>
-                    }
-                    targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    >
-                    <MenuItem primaryText="Refresh" />
-                    <MenuItem primaryText="Help" />
-                    <MenuItem primaryText="Sign out" onTouchTap={this.onLogoutClick} />
-                </IconMenu>
-            </div>;
-        }
-        else {
-            element =
-                <FacebookLogin
-                    appId="1816468645258885"
-                    size={"small"}
-                    textButton={"Login"}
-                    icon={"fa-facebook"}
-                    autoLoad={true}
-                    fields="name,email,picture"
-                    scope="public_profile,manage_pages,publish_pages,read_insights,pages_show_list,pages_manage_cta,pages_manage_instant_articles"
-                    callback={this.onLoginCallback}
-                    />;
-        }
-        return element;
-    }
-    getLeftElement() {
-        let home =
-            <FlatButton
-                label="Fablr"
-                labelPosition="after"
-                icon={<Home color={fullWhite} />}
-                labelStyle={{ color: fullWhite, fontSize: 25 }}
-                />;
-        let post =
-            <FlatButton
-                label="Post"
-                labelStyle={{ color: fullWhite }}
-                onTouchTap={this.openDialog}
-                />;
-        let element;
-        if (this.props.logged) {
-            element =
-                <div>
-                    {home}
-                    {post}
-                    <PostDialog />
-                </div>;
-        }
-        else {
-            element = home;
-        }
-        return element;
-    }
+
     render() {
-        const appBar =
-            <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-                <AppBar
-                    iconElementLeft={this.getLeftElement()}
-                    iconElementRight={this.getRightElement()}
-                    />
-            </MuiThemeProvider>
-        return appBar;
+        return <AppBar
+            iconElementLeft={AppBarUserActions(this.props, this.openDialog)}
+            iconElementRight={AppBarUserInfo(this.props, this.onLoginCallback, this.onLogoutClick)}
+            />;
     }
 }
 
+const AppBarUserActions = (props, openDialog) => {
+    if (props.logged) {
+        return LoggedUserActions(openDialog);
+    }
+    else {
+        return FablrHomeButton();
+    }
+};
+
+const LoggedUserActions = (openDialog) => <div>
+    {FablrHomeButton()}
+    {PostActionButton(openDialog)}
+    <PostDialog />
+</div>
+
+const FablrHomeButton = () => <FlatButton
+    label="Fablr"
+    labelPosition="after"
+    icon={<Home color={fullWhite} />}
+    labelStyle={{ color: fullWhite, fontSize: 25 }}
+    />;
+
+const PostActionButton = (openDialog) => <FlatButton
+    label="Post"
+    labelStyle={{ color: fullWhite }}
+    onTouchTap={openDialog}
+    />;
+
+const AppBarUserInfo = (props, onLoginCallback, onLogoutClick) => {
+    if (props.logged) {
+        return LoggedUserInfo(props, onLogoutClick);
+    }
+    else {
+        return GuestUserInfo(onLoginCallback);
+    }
+}
+
+const GuestUserInfo = (onLoginCallback) => <FacebookLogin
+    appId="1816468645258885"
+    size={"small"}
+    textButton={"Login"}
+    icon={"fa-facebook"}
+    autoLoad={true}
+    fields="name,email,picture"
+    scope="public_profile,manage_pages,publish_pages,read_insights,pages_show_list,pages_manage_cta,pages_manage_instant_articles"
+    callback={onLoginCallback}
+    />;
+
+const LoggedUserInfo = (props, onLogoutClick) => <div>
+    <IconMenu
+        iconButtonElement={
+            <IconButton><Avatar src={props.session.picture.data.url} />{props.session.name}</IconButton>
+        }
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        >
+        <MenuItem primaryText="Sign out" onTouchTap={onLogoutClick} />
+    </IconMenu>
+</div>;
+
 const initialState = { logged: false };
 
-const mapStateToProps = ({appBarReducer:{logged = initialState.logged, session}}) => ({
+const mapStateToProps = ({appBarReducer: {logged = initialState.logged, session}}) => ({
     logged,
     session
 });
