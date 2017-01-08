@@ -24,10 +24,7 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
         } 
         else if(type==='POST_TIME_CHANGED') {
             return Object.assign({},state, {pdTime});
-        } 
-        else if(type==='POST_FORM_VALIDATED') {
-            return Object.assign({},state, {pdValid});
-        } 
+        }
         else if(type==='POSTING') {
             return Object.assign({},state, {pdPosting});
         } 
@@ -43,7 +40,7 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
         else if(type==='DISMISS_POST_ERROR'){
             return Object.assign({},state, {pdErrorMessage});
         }
-        else if(type==='INVALID_FORM_ERROR'){
+        else if(type==='FORM_VALIDATED'){
             return Object.assign({},state, {pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError});
         }
         else{

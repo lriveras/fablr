@@ -69,13 +69,6 @@ const postTimeChanged = (time) => {
   }
 };
 
-const postFormValidated = (valid) => {
-  return {
-    type: 'POST_FORM_VALIDATED',
-    pdValid: valid 
-  }
-};
-
 const posting = () => {
   return {
     type: 'POSTING',
@@ -108,9 +101,9 @@ const dismissPostError = () => {
   }
 };
 
-const invalidFormError = (pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError) => {
+const formValidated = (pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError) => {
   return {
-    type: 'INVALID_FORM_ERROR',
+    type: 'FORM_VALIDATED',
     pdErrorMessage: pdErrorMessage,
     pdPageError,
     pdTextError,
@@ -122,4 +115,4 @@ const invalidFormError = (pdErrorMessage, pdPageError, pdTextError, pdDateError,
 export { closePostDialog, openPostDialog, myPagesLoaded,
     pageSelected, postTextChanged, 
     postDateChanged, postTimeChanged, 
-    postFormValidated, posting, posted, toggleScheduling, postError, dismissPostError, invalidFormError };
+    posting, posted, toggleScheduling, postError, dismissPostError, formValidated };
