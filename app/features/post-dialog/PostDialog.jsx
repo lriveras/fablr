@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import {
     closePostDialog, openPostDialog, myPagesLoaded,
-    pageSelected, postTextChanged,
+    pageSelected, postTextChanged, postLinkChanged,
     postDateChanged, postTimeChanged,
     posting, posted, toggleScheduling, postError, dismissPostError, formValidated
 } from './post-dialog-actions.js';
@@ -36,18 +36,19 @@ class PostDialog extends React.Component {
         let pdErrorMessage = "",
         pdPageError = !this.props.pdPage || !this.props.pdPage.id, 
         pdTextError = !this.props.pdText || this.props.pdText == "", 
+        pdLinkError = false, 
         pdDateError = false, 
         pdTimeError = false;
         if (this.props.pdScheduled) {
             pdDateError = !Date.parse(this.props.pdDate);
             pdTimeError = !Date.parse(this.props.pdTime);
         }
-        if (pdPageError || pdTextError || pdDateError || pdTimeError) {
+        if (pdPageError || pdTextError || pdLinkError || pdDateError || pdTimeError) {
             pdErrorMessage = "There are some errors in the post please review the form.";
-            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError);
+            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError);
         }
         else {
-            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError);
+            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError);
             this.onPost();
         }
     }
@@ -56,6 +57,7 @@ class PostDialog extends React.Component {
         const uri = "/" + this.props.pdPage.id + "/feed";
         let post = {};
         post.message = this.props.pdText;
+        post.link = this.props.pdLink;
         post.access_token = this.props.pdPage.access_token;
         if (this.props.pdScheduled) {
             let date = new Date(this.props.pdDate);
@@ -97,6 +99,7 @@ const PostForm = (props) => {
         <div>
             {PostDialogPageSelectRow(props)}
             {PostDialogTextFieldRow(props)}
+            {PostDialogLinkFieldRow(props)}
             {PostDialogToggleScheduleRow(props)}
             {PostScheduledTimeRow(props)}
         </div>;
@@ -169,6 +172,22 @@ const PostDialogTextFieldRow = ({pdText, pdTextError, postTextChanged}) => <Row>
     </Col>
 </Row>;
 
+const PostDialogLinkFieldRow = ({pdLink, pdLinkError, postLinkChanged}) => <Row>
+    <Col xs={12} md={12}>
+        <TextField
+            hintText="Paste some link..."
+            value={pdLink}
+            multiLine={false}
+            fullWidth={true}
+            rows={1}
+            errorText={pdLinkError ? "This field is required" : ""}
+            rowsMax={1}
+            maxLength="420"
+            onChange={(e, t) => postLinkChanged(t)}
+            />
+    </Col>
+</Row>;
+
 const PostDatePicker = ({pdDate, postDateChanged, pdDateError}) => <DatePicker
     hintText="Select date..."
     value={pdDate}
@@ -211,6 +230,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         myPagesLoaded: (pages) => dispatch(myPagesLoaded(pages)),
         pageSelected: (page) => dispatch(pageSelected(page)),
         postTextChanged: (text) => dispatch(postTextChanged(text)),
+        postLinkChanged: (link) => dispatch(postLinkChanged(link)),
         postDateChanged: (date) => dispatch(postDateChanged(date)),
         postTimeChanged: (time) => dispatch(postTimeChanged(time)),
         posting: () => dispatch(posting()),
@@ -218,8 +238,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         toggleScheduling: (currVal) => dispatch(toggleScheduling(currVal)),
         postError: (errorMessage) => dispatch(postError(errorMessage)),
         dismissPostError: () => dispatch(dismissPostError()),
-        formValidated: (pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError) =>
-            dispatch(formValidated(pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError))
+        formValidated: (pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError) =>
+            dispatch(formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError))
     };
     return Object.assign({}, stateProps, ownProps, actions, dispatchProps);
 }

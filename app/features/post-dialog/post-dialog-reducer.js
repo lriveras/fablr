@@ -1,7 +1,7 @@
 const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled, 
-    postDialog, pdLoading, pdPage, pdText, 
+    postDialog, pdLoading, pdPage, pdText, pdLink,
     pdDate, pdTime, pdValid, pdPosting, pdPost, myPages, 
-    pdPageError, pdTextError, pdDateError, pdTimeError})=>{
+    pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError})=>{
         if(type==='CLOSE_POST_DIALOG'){
             return Object.assign({},state, {postDialog});
         } 
@@ -18,6 +18,9 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
         } 
         else if(type==='POST_TEXT_CHANGED') {
             return Object.assign({},state, {pdText});
+        } 
+        else if(type==='POST_LINK_CHANGED') {
+            return Object.assign({},state, {pdLink});
         } 
         else if(type==='POST_DATE_CHANGED') {
             return Object.assign({},state, {pdDate});
@@ -41,7 +44,7 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
             return Object.assign({},state, {pdErrorMessage});
         }
         else if(type==='FORM_VALIDATED'){
-            return Object.assign({},state, {pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError});
+            return Object.assign({},state, {pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError});
         }
         else{
             return Object.assign({},state,);

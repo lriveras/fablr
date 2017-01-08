@@ -55,6 +55,13 @@ const postTextChanged = (text) => {
   }
 };
 
+const postLinkChanged = (link) => {
+  return {
+    type: 'POST_LINK_CHANGED',
+    pdLink: link 
+  }
+};
+
 const postDateChanged = (date) => {
   return {
     type: 'POST_DATE_CHANGED',
@@ -101,12 +108,13 @@ const dismissPostError = () => {
   }
 };
 
-const formValidated = (pdErrorMessage, pdPageError, pdTextError, pdDateError, pdTimeError) => {
+const formValidated = (pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError) => {
   return {
     type: 'FORM_VALIDATED',
     pdErrorMessage: pdErrorMessage,
     pdPageError,
     pdTextError,
+    pdLinkError,
     pdDateError,
     pdTimeError
   }
@@ -115,4 +123,4 @@ const formValidated = (pdErrorMessage, pdPageError, pdTextError, pdDateError, pd
 export { closePostDialog, openPostDialog, myPagesLoaded,
     pageSelected, postTextChanged, 
     postDateChanged, postTimeChanged, 
-    posting, posted, toggleScheduling, postError, dismissPostError, formValidated };
+    posting, posted, toggleScheduling, postError, dismissPostError, formValidated, postLinkChanged };
