@@ -26,7 +26,7 @@ let load = () => {
         <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
             <Provider store={store}>
                 <Router history={browserHistory}>
-                    <Route path="/" component={FablrAppBar}>
+                    <Route path="/" component={Home}>
                         <Route path="hello" component={Home}>
 
                         </Route>

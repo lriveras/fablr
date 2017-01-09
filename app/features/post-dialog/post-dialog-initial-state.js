@@ -3,6 +3,7 @@ const postDialogReducer = {
     pdLoading: false,
     pdPage: {},
     pdText: "",
+    pdLink: "",
     pdDate: {},
     pdTime: {},
     pdValid: false,
@@ -13,6 +14,7 @@ const postDialogReducer = {
     pdErrorMessage: "",
     pdPageError: false, 
     pdTextError: false, 
+    pdLinkError: false, 
     pdDateError: false, 
     pdTimeError: false};
 

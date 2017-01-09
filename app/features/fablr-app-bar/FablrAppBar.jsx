@@ -45,6 +45,7 @@ class FablrAppBar extends React.Component {
     onLoginCallback(response) {
         if (response.accessToken) {
             this.props.onLogin(response);
+            FB.api('/me/accounts', 'GET', {}, this.loadMyPages);
         }
     }
 

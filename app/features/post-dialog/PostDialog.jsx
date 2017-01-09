@@ -74,7 +74,6 @@ class PostDialog extends React.Component {
         this.props.posting();
     }
     render() {
-        const items = this.props.myPages.map((item) => <MenuItem value={item} key={item.id} primaryText={item.name} />);
         return PostDialogGrid(this.props, this.onValidate);
     }
 }
