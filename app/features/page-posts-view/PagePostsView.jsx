@@ -27,6 +27,8 @@ class PostDialog extends React.Component {
     constructor(props) {
         super(props);
         this.onPageSelected = this.onPageSelected.bind(this);
+        this.onPageNext = this.onPageNext.bind(this);
+        this.onPagePrev = this.onPagePrev.bind(this);
     }
     onPageSelected(e, k, page){
         const uri = "/" + page.id + "/promotable_posts?fields=reactions.summary(true),message,link,scheduled_publish_time,is_published,created_time"
@@ -39,18 +41,36 @@ class PostDialog extends React.Component {
         FB.api(uri, "GET", { }, callback);
 
     }
+    onPageNext(){
+        const uri = this.props.pgPaging.next.split("v2.8")[1];
+        const callback = (response) => {
+            console.log(response);
+            if (response && !response.error && response.data.length>0) this.props.loadPosts(response);
+            else this.props.postError("Oops! Something went wrong while loading the posts, please try again.");
+        }
+        FB.api(uri, "GET", { }, callback);
+    }
+    onPagePrev(){
+        const uri = this.props.pgPaging.previous.split("v2.8")[1];
+        const callback = (response) => {
+            console.log(response);
+            if (response && !response.error && response.data.length>0) this.props.loadPosts(response);
+            else this.props.postError("Oops! Something went wrong while loading the posts, please try again.");
+        }
+        FB.api(uri, "GET", { }, callback);
+    }
     render() {
-        return PagePostGrid(this.props, this.onPageSelected);
+        return PagePostGrid(this.props, this.onPageSelected, this.onPageNext, this.onPagePrev);
     }
 }
 
-const PagePostGrid = (props, onPageSelected) => <div>
+const PagePostGrid = (props, onPageSelected, onPageNext, onPagePrev) => <div>
     <Grid>
         {NoPagesToShowWarning(props)}
         {PageSelectRow(props, onPageSelected)}
         <Row>
             <Col xs={12} md={12}>
-                {PostTable(props)}
+                {PostTable(props, onPageNext, onPagePrev)}
             </Col>
         </Row>
     </Grid>
@@ -79,7 +99,7 @@ const PageSelectRow = ({pgPage = {}, myPages}, onPageSelected) => {
     </Row>
 };
 
-const PostTable = ({pgPosts, pgPaging}) => {
+const PostTable = ({pgPosts, pgPaging}, onPageNext, onPagePrev) => {
     if(!pgPosts || pgPosts.length < 1) return <p>No posts to show</p>;
     let postRows = pgPosts.map((post) => PostTableRow(post));
     return <Table
@@ -93,7 +113,7 @@ const PostTable = ({pgPosts, pgPaging}) => {
         <TableBody displayRowCheckbox={false}>
             {postRows}
         </TableBody>
-        {PostTableFooter()}
+        {PostTableFooter(onPageNext, onPagePrev)}
     </Table>
 }
 
@@ -132,12 +152,23 @@ return <TableRow key={post.id} selectable={false}>
     </TableRow>
 }
 
-const PostTableFooter = () => {
+const PostTableFooter = (onPageNext, onPagePrev) => {
     return <TableFooter
         adjustForCheckbox={false}
         ><TableRow>
             <TableRowColumn colSpan="3" style={{ textAlign: 'center' }}>
-                Back Next
+                <FlatButton
+            label="Prev"
+            primary={true}
+            keyboardFocused={false}
+            onTouchTap={ onPagePrev }
+            /> 
+            <FlatButton
+            label="Next"
+            primary={true}
+            keyboardFocused={false}
+            onTouchTap={ onPageNext }
+            />
               </TableRowColumn>
         </TableRow>
     </TableFooter>;

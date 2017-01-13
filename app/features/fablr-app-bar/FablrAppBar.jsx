@@ -34,7 +34,10 @@ class FablrAppBar extends React.Component {
     }
     openDialog() {
         this.props.openPostDialog();
-        FB.api('/me/accounts', 'GET', {}, this.loadMyPages);
+        if(!this.props.myPages)
+            FB.api('/me/accounts', 'GET', {}, this.loadMyPages);
+        else 
+            this.props.myPagesLoaded(this.props.myPages);
     }
     loadMyPages(response) {
         this.props.myPagesLoaded(response.data);
@@ -119,10 +122,9 @@ const LoggedUserInfo = (props, onLogoutClick) => <div>
 
 const initialState = { logged: false };
 
-const mapStateToProps = ({appBarReducer: {logged = initialState.logged, session}}) => ({
-    logged,
-    session
-});
+const mapStateToProps = ({appBarReducer, postDialogReducer}) => {
+    return Object.assign({}, appBarReducer, postDialogReducer) ;
+};
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const { logged } = stateProps;

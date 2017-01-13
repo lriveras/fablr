@@ -17,7 +17,6 @@ const openPostDialog = () => {
     pdValid: false,
     pdPosting: false,
     pdPost: {},
-    myPages: [],
     pdScheduled: false,
     pdPageError: false,
     pdTextError: false,

@@ -8,7 +8,7 @@ const postDialogReducer = (state, {type, pdErrorMessage, pdScheduled,
         else if(type==='OPEN_POST_DIALOG') {
             return Object.assign({},state, {postDialog, pdLoading, pdPage, pdText, 
                 pdDate, pdTime, pdValid, pdPosting, 
-                pdPost, myPages, pdScheduled, pdPageError, pdTextError, pdDateError, pdTimeError});
+                pdPost, pdScheduled, pdPageError, pdTextError, pdDateError, pdTimeError});
         }
         else if(type==='MY_PAGES_LOADED') {
             return Object.assign({},state, {myPages, pdLoading});

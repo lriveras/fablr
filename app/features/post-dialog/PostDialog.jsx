@@ -67,8 +67,12 @@ class PostDialog extends React.Component {
             post.published = false;
         }
         const callback = (response) => {
-            if (response && !response.error) this.props.posted(response);
-            else this.props.postError("Oops! Something went wrong while posting to Facebook, please try again.");
+            if (response && !response.error) {
+                this.props.posted(response);
+            }
+            else {
+                this.props.postError("Oops! Something went wrong while posting to Facebook, please try again.");
+            }
         }
         FB.api(uri, "POST", post, callback);
         this.props.posting();
@@ -221,7 +225,7 @@ const CircularProgressRow = () => <Row>
     </Col>
 </Row>;
 
-const mapStateToProps = ({postDialogReducer}) => ((Object.keys(postDialogReducer).length === 0) ? initialState : postDialogReducer);
+const mapStateToProps = ({postDialogReducer, pagePostsViewReducer}) => (Object.assign({}, postDialogReducer, pagePostsViewReducer));
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const { dispatch } = dispatchProps;
