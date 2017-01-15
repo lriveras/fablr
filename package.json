@@ -9,7 +9,8 @@
     "test": "mocha test/helpers/browser.js server/static/build/tests.fablr.js",
     "start": "node ./server/index.js",
     "deploy": "npm run clean && npm install && npm run build && npm test && npm start",
-    "reload": "npm run build && npm start"
+    "reload": "npm run build && npm start",
+    "reloadtest": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
