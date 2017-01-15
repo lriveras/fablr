@@ -86,10 +86,11 @@ const PagePostsView = (pgPage = {}, myPages, pgPosts, pgPaging,
     }
 
     const PostTableRow = (post) => {
+        const message = post.message ? post.message : post.link;
         const createdDate = post.created_time ? new Date(post.created_time).toUTCString() : "N/A";
         const scheduledDate = post.scheduled_publish_time ? new Date(post.scheduled_publish_time).toUTCString() : "N/A";
         return <TableRow key={post.id} selectable={false}>
-            <TableRowColumn width={"30%"}>{post.message}</TableRowColumn>
+            <TableRowColumn width={"30%"}>{message}</TableRowColumn>
             <TableRowColumn width={"20%"}>{createdDate}</TableRowColumn>
             <TableRowColumn width={"10%"}>{post.is_published ? "Yes" : "No"}</TableRowColumn>
             <TableRowColumn width={"20%"}>{scheduledDate}</TableRowColumn>
