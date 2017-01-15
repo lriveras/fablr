@@ -23,237 +23,180 @@ import TimePicker from 'material-ui/TimePicker';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 
+const PostDialog = ({
+    postDialog, 
+    pdPosting, 
+    closePostDialog, 
+    pdErrorMessage, 
+    dismissPostError, 
+    pdPost, 
+    pdPage, 
+    pageSelected, 
+    pdLoading,
+    pdPageError, 
+    myPages, 
+    pdScheduled, 
+    toggleScheduling, 
+    pdText, 
+    pdTextError, 
+    postTextChanged, 
+    pdLink, 
+    pdLinkError, 
+    postLinkChanged,
+    pdDate, 
+    postDateChanged, 
+    pdDateError,
+    pdTime, 
+    postTimeChanged, 
+    pdTimeError}, 
+    onValidate,
+    ) => {
 
+    const PostForm = () => {
+        return (pdLoading || pdPosting) ? CircularProgressRow() :
+            <div>
+                {PostDialogPageSelectRow()}
+                {PostDialogTextFieldRow()}
+                {PostDialogLinkFieldRow()}
+                {PostDialogToggleScheduleRow()}
+                {PostScheduledTimeRow()}
+            </div>;
+    };
 
-class PostDialog extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onPost = this.onPost.bind(this);
-        this.onValidate = this.onValidate.bind(this);
+    const PostDialogActions = () => [
+        <FlatButton
+            label="Cancel"
+            primary={true}
+            onTouchTap={() => { if (pdPosting) return; closePostDialog() } }
+            />,
+        <FlatButton
+            label="Post"
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={onValidate}
+            />,
+    ];
 
-    }
-    onValidate() {
-        let pdErrorMessage = "",
-        pdPageError = !this.props.pdPage || !this.props.pdPage.id, 
-        pdTextError = !this.props.pdText || this.props.pdText == "", 
-        pdLinkError = false, 
-        pdDateError = false, 
-        pdTimeError = false;
-        if (this.props.pdScheduled) {
-            pdDateError = !Date.parse(this.props.pdDate);
-            pdTimeError = !Date.parse(this.props.pdTime);
-        }
-        if (pdPageError || pdTextError || pdLinkError || pdDateError || pdTimeError) {
-            pdErrorMessage = "There are some errors in the post please review the form.";
-            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError);
-        }
-        else {
-            this.props.formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError);
-            this.onPost();
-        }
-    }
-    onPost() {
-        if (this.props.pdPosting) return;
-        const uri = "/" + this.props.pdPage.id + "/feed";
-        let post = {};
-        post.message = this.props.pdText;
-        post.link = this.props.pdLink;
-        post.access_token = this.props.pdPage.access_token;
-        if (this.props.pdScheduled) {
-            let date = new Date(this.props.pdDate);
-            date.setHours(this.props.pdTime.getHours());
-            date.setMinutes(this.props.pdTime.getMinutes());
-            post.scheduled_publish_time = parseInt(date.getTime() / 1000);//converting to linux epoch
-            post.published = false;
-        }
-        const callback = (response) => {
-            if (response && !response.error) {
-                this.props.posted(response);
-            }
-            else {
-                this.props.postError("Oops! Something went wrong while posting to Facebook, please try again.");
-            }
-        }
-        FB.api(uri, "POST", post, callback);
-        this.props.posting();
-    }
-    render() {
-        return PostDialogGrid(this.props, this.onValidate);
-    }
-}
+    const PostDialogSnackbar = () => {
+        let posted = (pdPost && pdPost.id), error = (pdErrorMessage && pdErrorMessage != "")
+        let message = error ? pdErrorMessage : posted ? "Posted successfully to Facebook page " + pdPage.name : "";
+        return !error && !posted ? <div></div> :
+            <Snackbar
+                open={true}
+                message={message}
+                autoHideDuration={4000}
+                onRequestClose={dismissPostError}
+                />;
+    };
 
-const PostDialogGrid = (props, onValidate) => <div>
-    <Grid>
-        <Dialog
-            title="Page Post"
-            actions={PostDialogActions(props, onValidate)}
-            modal={true}
-            open={props.postDialog}
-            onRequestClose={props.closePostDialog}
-            >
-            {PostForm(props)}
-        </Dialog>
-    </Grid>
-    {PostDialogSnackbar(props)}
-</div>;
+    const PostDialogPageSelectRow = () => {
+        const items = myPages.map((item) => <MenuItem value={item} key={item.id} primaryText={item.name} />);
+        return <Row>
+            <Col xs={8} md={8}>
+                <SelectField
+                    value={pdPage}
+                    onChange={(e, k, page) => pageSelected(page)}
+                    floatingLabelText="Select page..."
+                    floatingLabelFixed={true}
+                    errorText={pdPageError ? "This field is required" : ""}
+                    >
+                    {items}
+                </SelectField>
+            </Col>
+        </Row>
+    };
 
-const PostForm = (props) => {
-    return (props.pdLoading || props.pdPosting) ? CircularProgressRow() :
-        <div>
-            {PostDialogPageSelectRow(props)}
-            {PostDialogTextFieldRow(props)}
-            {PostDialogLinkFieldRow(props)}
-            {PostDialogToggleScheduleRow(props)}
-            {PostScheduledTimeRow(props)}
-        </div>;
-};
+    const PostDialogToggleScheduleRow = () => <Row>
+        <Col xs={3} md={3}>
+            <Toggle
+                label="Schedule"
+                defaultToggled={pdScheduled}
+                onToggle={() => toggleScheduling(pdScheduled)}
+                />
+        </Col>
+    </Row>;
 
-const PostDialogActions = ({pdPosting, closePostDialog}, onValidate) => [
-    <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={() => { if (pdPosting) return; closePostDialog() } }
-        />,
-    <FlatButton
-        label="Post"
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={onValidate}
-        />,
-];
+    const PostDialogTextFieldRow = () => <Row>
+        <Col xs={12} md={12}>
+            <TextField
+                hintText="Write something..."
+                value={pdText}
+                multiLine={true}
+                fullWidth={true}
+                rows={4}
+                errorText={pdTextError ? "This field is required" : ""}
+                rowsMax={6}
+                maxLength="420"
+                onChange={(e, t) => postTextChanged(t)}
+                />
+        </Col>
+    </Row>;
 
-const PostDialogSnackbar = ({pdErrorMessage, dismissPostError, pdPost, pdPage}) => {
-    let posted = (pdPost && pdPost.id), error = (pdErrorMessage && pdErrorMessage != "")
-    let message = error ? pdErrorMessage : posted ? "Posted successfully to Facebook page " + pdPage.name : "";
-    return !error && !posted ? <div></div> :
-        <Snackbar
-            open={true}
-            message={message}
-            autoHideDuration={4000}
-            onRequestClose={dismissPostError}
-            />;
-};
+    const PostDialogLinkFieldRow = () => <Row>
+        <Col xs={12} md={12}>
+            <TextField
+                hintText="Paste some link..."
+                value={pdLink}
+                multiLine={false}
+                fullWidth={true}
+                rows={1}
+                errorText={pdLinkError ? "This field is required" : ""}
+                rowsMax={1}
+                maxLength="420"
+                onChange={(e, t) => postLinkChanged(t)}
+                />
+        </Col>
+    </Row>;
 
-const PostDialogPageSelectRow = ({pdPage, pageSelected, pdPageError, myPages}) => {
-    const items = myPages.map((item) => <MenuItem value={item} key={item.id} primaryText={item.name} />);
-    return <Row>
-        <Col xs={8} md={8}>
-            <SelectField
-                value={pdPage}
-                onChange={(e, k, page) => pageSelected(page)}
-                floatingLabelText="Select page..."
-                floatingLabelFixed={true}
-                errorText={pdPageError ? "This field is required" : ""}
-                >
-                {items}
-            </SelectField>
+    const PostDatePicker = () => <DatePicker
+        hintText="Select date..."
+        value={pdDate}
+        onChange={(e, d) => postDateChanged(d)}
+        errorText={pdDateError ? "This field is required" : ""}
+        />;
+
+    const PostTimePicker = () => <TimePicker
+        format="ampm"
+        hintText="Select time..."
+        value={pdTime}
+        onChange={(e, t) => postTimeChanged(t)}
+        errorText={pdTimeError ? "This field is required" : ""}
+        />;
+
+    const PostScheduledTimeRow = () => (!pdScheduled) ? <Row></Row> : <Row>
+        <Col xs={3} md={3}>
+            {PostDatePicker()}
+        </Col>
+        <Col xs={3} md={3}>
+            {PostTimePicker()}
         </Col>
     </Row>
-};
 
-const PostDialogToggleScheduleRow = ({pdScheduled, toggleScheduling}) => <Row>
-    <Col xs={3} md={3}>
-        <Toggle
-            label="Schedule"
-            defaultToggled={pdScheduled}
-            onToggle={() => toggleScheduling(pdScheduled)}
-            />
-    </Col>
-</Row>;
+    const CircularProgressRow = () => <Row>
+        <Col xs={6} md={6}>
+        </Col>
+        <Col xs={6} md={6}>
+            <CircularProgress size={100} thickness={5} />
+        </Col>
+    </Row>;
 
-const PostDialogTextFieldRow = ({pdText, pdTextError, postTextChanged}) => <Row>
-    <Col xs={12} md={12}>
-        <TextField
-            hintText="Write something..."
-            value={pdText}
-            multiLine={true}
-            fullWidth={true}
-            rows={4}
-            errorText={pdTextError ? "This field is required" : ""}
-            rowsMax={6}
-            maxLength="420"
-            onChange={(e, t) => postTextChanged(t)}
-            />
-    </Col>
-</Row>;
-
-const PostDialogLinkFieldRow = ({pdLink, pdLinkError, postLinkChanged}) => <Row>
-    <Col xs={12} md={12}>
-        <TextField
-            hintText="Paste some link..."
-            value={pdLink}
-            multiLine={false}
-            fullWidth={true}
-            rows={1}
-            errorText={pdLinkError ? "This field is required" : ""}
-            rowsMax={1}
-            maxLength="420"
-            onChange={(e, t) => postLinkChanged(t)}
-            />
-    </Col>
-</Row>;
-
-const PostDatePicker = ({pdDate, postDateChanged, pdDateError}) => <DatePicker
-    hintText="Select date..."
-    value={pdDate}
-    onChange={(e, d) => postDateChanged(d)}
-    errorText={pdDateError ? "This field is required" : ""}
-    />;
-
-const PostTimePicker = ({pdTime, postTimeChanged, pdTimeError}) => <TimePicker
-    format="ampm"
-    hintText="Select time..."
-    value={pdTime}
-    onChange={(e, t) => postTimeChanged(t)}
-    errorText={pdTimeError ? "This field is required" : ""}
-    />;
-
-const PostScheduledTimeRow = (props) => (!props.pdScheduled) ? <Row></Row> : <Row>
-    <Col xs={3} md={3}>
-        {PostDatePicker(props)}
-    </Col>
-    <Col xs={3} md={3}>
-        {PostTimePicker(props)}
-    </Col>
-</Row>
-
-const CircularProgressRow = () => <Row>
-    <Col xs={6} md={6}>
-    </Col>
-    <Col xs={6} md={6}>
-        <CircularProgress size={100} thickness={5} />
-    </Col>
-</Row>;
-
-const mapStateToProps = ({postDialogReducer, pagePostsViewReducer}) => (Object.assign({}, postDialogReducer, pagePostsViewReducer));
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-    const { dispatch } = dispatchProps;
-    const actions = {
-        closePostDialog: () => dispatch(closePostDialog()),
-        openPostDialog: () => dispatch(openPostDialog()),
-        myPagesLoaded: (pages) => dispatch(myPagesLoaded(pages)),
-        pageSelected: (page) => dispatch(pageSelected(page)),
-        postTextChanged: (text) => dispatch(postTextChanged(text)),
-        postLinkChanged: (link) => dispatch(postLinkChanged(link)),
-        postDateChanged: (date) => dispatch(postDateChanged(date)),
-        postTimeChanged: (time) => dispatch(postTimeChanged(time)),
-        posting: () => dispatch(posting()),
-        posted: (post) => dispatch(posted(post)),
-        toggleScheduling: (currVal) => dispatch(toggleScheduling(currVal)),
-        postError: (errorMessage) => dispatch(postError(errorMessage)),
-        dismissPostError: () => dispatch(dismissPostError()),
-        formValidated: (pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError) =>
-            dispatch(formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError))
-    };
-    return Object.assign({}, stateProps, ownProps, actions, dispatchProps);
+    return <div>
+        <Grid>
+            <Dialog
+                title="Page Post"
+                actions={PostDialogActions()}
+                modal={true}
+                open={postDialog}
+                onRequestClose={closePostDialog}
+                >
+                {PostForm()}
+            </Dialog>
+        </Grid>
+        {PostDialogSnackbar()}
+    </div>;
 }
 
-export default connect(
-    mapStateToProps,
-    null,
-    mergeProps
-)(PostDialog)
+export default PostDialog;
 
 
 

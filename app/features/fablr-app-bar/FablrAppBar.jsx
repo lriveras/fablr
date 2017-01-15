@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { onLogin, onLogout } from './fablr-app-bar-actions';
 import { openPostDialog, myPagesLoaded } from '../post-dialog/post-dialog-actions';
-import PostDialog from '../post-dialog/PostDialog.jsx';
+import PostDialogContainer from '../post-dialog/PostDialogContainer.jsx';
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
@@ -72,7 +72,7 @@ const AppBarUserActions = (props, openDialog) => {
 const LoggedUserActions = (openDialog) => <div>
     {FablrHomeButton()}
     {PostActionButton(openDialog)}
-    <PostDialog />
+    <PostDialogContainer />
 </div>
 
 const FablrHomeButton = () => <FlatButton
