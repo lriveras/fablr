@@ -22,8 +22,9 @@ import Snackbar from 'material-ui/Snackbar';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
     from 'material-ui/Table';
 
-
-
+/*
+PagePostsView Component is a presentational container
+*/
 const PagePostsView = (pgPage = {}, myPages, pgPosts, pgPaging,
     onPageSelected, onPageNext, onPagePrev, openInsights) => {
 

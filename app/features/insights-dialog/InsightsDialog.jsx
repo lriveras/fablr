@@ -23,8 +23,9 @@ import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow
 import { fullWhite } from 'material-ui/styles/colors';
 import { PieChart, Pie, Legend, Tooltip, Text } from 'recharts'
 
-
-
+/*
+InsightsDialog Component is a presentational container
+*/
 const InsightsDialog = (open, onClose, message, link,
     impressionsData, consData, organicVsViralData) => {
     return <div>

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { openInsights, insightMetricLoaded, insightsPresented, closeInsights, fetchInsights } from './insights-dialog-actions.js';
 import InsightsDialog from './InsightsDialog.jsx';
-
-
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
     from 'material-ui/Table';
 
+/*
+InsightsDialogContainer Component is responsible for fetching and displaying 
+the following post insights metrics: post_impressions_by_paid_non_paid, post_consumptions_by_type, 
+post_impressions_organic_unique, post_impressions_viral_unique
+*/
 class InsightsDialogContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -62,24 +65,12 @@ class InsightsDialogContainer extends React.Component {
     fetchAllInsights(page) {
         let uri = `/${page.id}/insights/post_impressions_organic_unique`;
         FB.api(uri, "GET", {}, (response) => this.onOrganicUniqueMetricLoaded(response));
-
         uri = `/${page.id}/insights/post_impressions_viral_unique`;
         FB.api(uri, "GET", {}, (response) => this.onViralUniqueMetricLoaded(response));
-
-        //paid non
         uri = `/${page.id}/insights/post_impressions_by_paid_non_paid`;
         FB.api(uri, "GET", {}, (response) => this.onPaidNonPaidMetricLoaded(response));
-        //eng
-        //consum
         uri = `/${page.id}/insights/post_consumptions_by_type`;
         FB.api(uri, "GET", {}, (response) => this.onConsumptionsByTypeMetricLoaded(response));
-
-        uri = `/${page.id}/insights/post_consumptions_by_type_unique`;
-        //eng summary
-        // uri = `/${page.id}/insights/post_engaged_users`;
-        // uri = `/${page.id}/insights/post_engaged_fan`;
-        // uri = `/${page.id}/insights/post_fan_reach`;
-        // FB.api(`${uri}/`, "GET", {}, callback);
     }
     render() {
         return InsightsDialog(this.props.insightsOpen, this.props.closeInsights, this.props.insightsData.post.message, this.props.insightsData.post.link,
@@ -88,10 +79,12 @@ class InsightsDialogContainer extends React.Component {
     }
 }
 
+//Map state to component props
 const mapStateToProps = ({insightsDialogReducer, pagePostsViewReducer}) => {
     return Object.assign({}, insightsDialogReducer, pagePostsViewReducer);
 };
 
+//Merge props from state with component owned props and makes dispatch available to component
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const { dispatch } = dispatchProps;
     const actions = {

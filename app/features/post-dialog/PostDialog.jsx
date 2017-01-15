@@ -23,6 +23,9 @@ import TimePicker from 'material-ui/TimePicker';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 
+/*
+PostDialog Component is a presentational container
+*/
 const PostDialog = ({
     postDialog, 
     pdPosting, 

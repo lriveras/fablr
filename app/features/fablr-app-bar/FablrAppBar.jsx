@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { onLogin, onLogout } from './fablr-app-bar-actions';
 import { openPostDialog, myPagesLoaded } from '../post-dialog/post-dialog-actions';
 import PostDialogContainer from '../post-dialog/PostDialogContainer.jsx';
+import FablrConst from '../../fablr-const.js';
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
@@ -19,6 +20,9 @@ import FacebookLogin from 'react-facebook-login';
 import Avatar from 'material-ui/Avatar';
 import { fullWhite } from 'material-ui/styles/colors';
 
+/*
+FablrAppBar Component is a presentational container
+*/
 const FablrAppBar = ({logged, session}, openDialog, loadMyPages, onLogoutClick, onLoginCallback) => {
 
     const AppBarUserActions = () => {
@@ -59,13 +63,13 @@ const FablrAppBar = ({logged, session}, openDialog, loadMyPages, onLogoutClick, 
     }
 
     const GuestUserInfo = () => <FacebookLogin
-        appId="1816468645258885"
+        appId={FablrConst.appId}
         size={"small"}
         textButton={"Login"}
         icon={"fa-facebook"}
         autoLoad={true}
         fields="name,email,picture"
-        scope="public_profile,manage_pages,publish_pages,read_insights,pages_show_list,pages_manage_cta,pages_manage_instant_articles"
+        scope={FablrConst.appScope}
         callback={onLoginCallback}
         />;
 

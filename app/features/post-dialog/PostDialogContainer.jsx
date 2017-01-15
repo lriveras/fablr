@@ -9,10 +9,12 @@ import {
 } from './post-dialog-actions.js';
 import PostDialog from './PostDialog.jsx';
 import { pageSelected as reselectPostsViewPage, loadPosts } from '../page-posts-view/page-posts-view-actions.js';
-
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
+/*
+PostDialogContainer Component is responsible for recieving a post information and posting or scheduling it to Facebook
+*/
 class PostDialogContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -88,8 +90,10 @@ class PostDialogContainer extends React.Component {
     }
 }
 
+//Map state to component props
 const mapStateToProps = ({postDialogReducer, pagePostsViewReducer}) => (Object.assign({}, postDialogReducer, pagePostsViewReducer));
 
+//Merge props from state with component owned props and makes dispatch available to component
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const { dispatch } = dispatchProps;
     const actions = {

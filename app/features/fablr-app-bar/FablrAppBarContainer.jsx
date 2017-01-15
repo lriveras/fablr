@@ -20,11 +20,13 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import FacebookLogin from 'react-facebook-login';
 import Avatar from 'material-ui/Avatar';
 import { fullWhite } from 'material-ui/styles/colors';
-
+/*
+FablrAppBarContainer Component is responsible for displaying and executing the following user actions: Login, Logout, Post
+*/
 class FablrAppBarContainer extends React.Component {
     constructor(props) {
         super(props);
-        injectTapEventPlugin();
+        injectTapEventPlugin(); //allows tap event on material ui button (one time call in app)
         this.onLogoutClick = this.onLogoutClick.bind(this);
         this.onLoginCallback = this.onLoginCallback.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -56,12 +58,13 @@ class FablrAppBarContainer extends React.Component {
     }
 }
 
+//Map state to component props
 const mapStateToProps = ({appBarReducer, postDialogReducer}) => {
     return Object.assign({}, appBarReducer, postDialogReducer) ;
 };
 
+//Merge props from state with component owned props and makes dispatch available to component
 function mergeProps(stateProps, dispatchProps, ownProps) {
-    const { logged } = stateProps;
     const { dispatch } = dispatchProps;
     const actions = {
         onLogin: (session) => dispatch(onLogin(session)),

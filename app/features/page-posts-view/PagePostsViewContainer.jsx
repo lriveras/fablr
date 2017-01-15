@@ -8,6 +8,10 @@ import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import PagePostsView from './PagePostsView.jsx';
 
+/*
+PagePostsViewContainer Component is responsible for fetching and displaying
+posts related to the selected page and allow the user to launch the insights dialog for each post
+*/
 class PagePostsViewContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -53,10 +57,12 @@ class PagePostsViewContainer extends React.Component {
     }
 }
 
+//Map state to component props
 const mapStateToProps = ({appBarReducer, postDialogReducer, pagePostsViewReducer, insightsDialogReducer}) => {
     return Object.assign({}, appBarReducer, postDialogReducer, pagePostsViewReducer, insightsDialogReducer);
 };
 
+//Merge props from state with component owned props and makes dispatch available to component
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const { dispatch } = dispatchProps;
     const actions = {
