@@ -1,0 +1,1 @@
+import homeSpec from './specs/home.spec.jsx';

@@ -4,10 +4,20 @@ var webpack = require('webpack');
 var __builddir = path.join("server", "static", "build");
 
 module.exports = {
-    entry: './app/fablr-app.jsx',
+    entry: {
+        bundle: './app/fablr-app.jsx',
+        tests: './test/fablr-tests.jsx'
+    },
     output: {
         path: __builddir,
-        filename: 'fablr.js'
+        filename: '[name].fablr.js'
+    },
+    externals: {
+        'jsdom': 'window',
+        'cheerio': 'window',
+        'react/lib/ExecutionEnvironment': true,
+        'react/addons': true,
+        'react/lib/ReactContext': 'window'
     },
     module: {
         loaders: [
@@ -16,7 +26,7 @@ module.exports = {
                 loader: 'babel-loader',
                 exclude: /node_modules/,
                 query: {
-                    presets: ['es2015', 'react']
+                    presets: ['es2015', 'react', 'airbnb', 'stage-0']
                 }
             },
             {
@@ -24,7 +34,7 @@ module.exports = {
                 loader: "babel-loader",
                 exclude: /(node_modules|__builddir)/,
                 query: {
-                    presets: ['es2015', 'react']
+                    presets: ['es2015', 'react', 'airbnb', 'stage-0']
                 }
             },
             {
@@ -33,8 +43,5 @@ module.exports = {
                 include: /flexboxgrid/,
             }
         ]
-    },
-    //   eslint: {
-    //     configFile: './.eslintrc'
-    //   }
+    }
 }
