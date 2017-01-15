@@ -16,7 +16,7 @@ class PagePostsViewContainer extends React.Component {
         this.onPagePrev = this.onPagePrev.bind(this);
     }
     onPageSelected(e, k, page) {
-        const uri = "/" + page.id + "/promotable_posts?fields=reactions.summary(true),message,link,scheduled_publish_time,is_published,created_time"
+        const uri = `/${page.id}/promotable_posts?fields=reactions.summary(true),message,link,scheduled_publish_time,is_published,created_time`;
         this.props.pageSelected(page);
         const callback = (response) => {
             console.log(response);

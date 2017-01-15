@@ -16,7 +16,7 @@ const insightsDialogReducer = (state,
         return newState;
     }
     else if (type === 'INSIGHTS_PRESENTED') {
-        return Object.assign({}, state, { insightsLoading });
+        return Object.assign({}, state, { insightsLoading, insightsFetching });
     }
     else if (type === 'CLOSE_INSIGHTS') {
         return Object.assign({}, state, { insightsOpen });

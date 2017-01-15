@@ -25,123 +25,126 @@ import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow
 
 
 const PagePostsView = (pgPage = {}, myPages, pgPosts, pgPaging,
-    onPageSelected, onPageNext, onPagePrev, openInsights) => <div>
+    onPageSelected, onPageNext, onPagePrev, openInsights) => {
+
+    const NoPagesToShowWarning = () => {
+        if (!myPages || myPages.length < 1) {
+            return <h3>No pages to show...</h3>;
+        }
+    }
+
+    const PageSelectRow = () => {
+        if (!myPages || myPages.length < 1) return;
+        const items = myPages.map((item) => <MenuItem value={item} key={item.id} primaryText={item.name} />);
+        return <Row>
+            <Col xs={8} md={8}>
+                <SelectField
+                    value={pgPage}
+                    onChange={onPageSelected}
+                    floatingLabelText="Select page..."
+                    floatingLabelFixed={true}
+                    >
+                    {items}
+                </SelectField>
+            </Col>
+        </Row>
+    };
+
+    const PostTable = () => {
+        if (!pgPosts || pgPosts.length < 1) return <h3>No posts to show</h3>;
+        let postRows = pgPosts.map((post) => PostTableRow(post, openInsights));
+        return <Table
+            height={"250"}
+            fixedHeader={true}
+            fixedFooter={true}
+            selectable={false}
+            multiSelectable={false}
+            >
+            {PostTableHeader()}
+            <TableBody displayRowCheckbox={false}>
+                {postRows}
+            </TableBody>
+            {PostTableFooter(onPageNext, onPagePrev)}
+        </Table>
+    }
+
+    const PostTableHeader = () => {
+        return <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+            enableSelectAll={false}
+            >
+            <TableRow>
+                <TableHeaderColumn tooltip="Post Message">Message</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Post Link">Link</TableHeaderColumn>
+                <TableHeaderColumn tooltip="The time when the post was scheduled for creation">Created Time</TableHeaderColumn>
+                <TableHeaderColumn tooltip="If the post is already published in the page">Published</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Time when the post is scheduled to be published">Scheduled Time</TableHeaderColumn>
+                <TableHeaderColumn tooltip="How many people have reacted to this post">Reactions</TableHeaderColumn>
+                <TableHeaderColumn tooltip="View insights on the selected post, such as how many impressions the post have">Insights</TableHeaderColumn>
+            </TableRow>
+        </TableHeader>
+    }
+
+    const PostTableRow = (post) => {
+        return <TableRow key={post.id} selectable={false}>
+            <TableRowColumn>{post.message}</TableRowColumn>
+            <TableRowColumn>{post.link}</TableRowColumn>
+            <TableRowColumn>{post.created_time}</TableRowColumn>
+            <TableRowColumn>{post.is_published ? "Yes" : "No"}</TableRowColumn>
+            <TableRowColumn>{post.scheduled_publish_time}</TableRowColumn>
+            <TableRowColumn>{post.reactions.summary.total_count}</TableRowColumn>
+            <TableRowColumn><FlatButton
+                label="Insights"
+                primary={true}
+                keyboardFocused={false}
+                onTouchTap={() => openInsights(post)}
+                /></TableRowColumn>
+        </TableRow>
+    }
+
+    const PostTableFooter = () => {
+        return <TableFooter
+            adjustForCheckbox={false}
+            ><TableRow>
+                <TableRowColumn colSpan="3" style={{ textAlign: 'center' }}>
+                    <FlatButton
+                        label="Prev"
+                        primary={true}
+                        keyboardFocused={false}
+                        onTouchTap={onPagePrev}
+                        />
+                    <FlatButton
+                        label="Next"
+                        primary={true}
+                        keyboardFocused={false}
+                        onTouchTap={onPageNext}
+                        />
+                </TableRowColumn>
+            </TableRow>
+        </TableFooter>;
+    }
+
+    const CircularProgressRow = () => <Row>
+        <Col xs={6} md={6}>
+        </Col>
+        <Col xs={6} md={6}>
+            <CircularProgress size={100} thickness={5} />
+        </Col>
+    </Row>;
+
+    return <div>
         <Grid>
-            {NoPagesToShowWarning(myPages)}
-            {PageSelectRow(pgPage, myPages, onPageSelected)}
+            {NoPagesToShowWarning()}
+            {PageSelectRow()}
             <Row>
                 <Col xs={12} md={12}>
-                    {PostTable(pgPosts, pgPaging, onPageNext, onPagePrev, openInsights)}
+                    {PostTable()}
                 </Col>
             </Row>
         </Grid>
     </div>;
-
-const NoPagesToShowWarning = (myPages) => {
-    if (!myPages || myPages.length < 1) {
-        return <h3>No pages to show...</h3>;
-    }
 }
-
-const PageSelectRow = (pgPage, myPages, onPageSelected) => {
-    if (!myPages || myPages.length < 1) return;
-    const items = myPages.map((item) => <MenuItem value={item} key={item.id} primaryText={item.name} />);
-    return <Row>
-        <Col xs={8} md={8}>
-            <SelectField
-                value={pgPage}
-                onChange={onPageSelected}
-                floatingLabelText="Select page..."
-                floatingLabelFixed={true}
-                >
-                {items}
-            </SelectField>
-        </Col>
-    </Row>
-};
-
-const PostTable = (pgPosts, pgPaging, onPageNext, onPagePrev, openInsights) => {
-    if (!pgPosts || pgPosts.length < 1) return <h3>No posts to show</h3>;
-    let postRows = pgPosts.map((post) => PostTableRow(post, openInsights));
-    return <Table
-        height={"250"}
-        fixedHeader={true}
-        fixedFooter={true}
-        selectable={false}
-        multiSelectable={false}
-        >
-        {PostTableHeader()}
-        <TableBody displayRowCheckbox={false}>
-            {postRows}
-        </TableBody>
-        {PostTableFooter(onPageNext, onPagePrev)}
-    </Table>
-}
-
-const PostTableHeader = () => {
-    return <TableHeader
-        displaySelectAll={false}
-        adjustForCheckbox={false}
-        enableSelectAll={false}
-        >
-        <TableRow>
-            <TableHeaderColumn tooltip="Post Message">Message</TableHeaderColumn>
-            <TableHeaderColumn tooltip="Post Link">Link</TableHeaderColumn>
-            <TableHeaderColumn tooltip="The time when the post was scheduled for creation">Created Time</TableHeaderColumn>
-            <TableHeaderColumn tooltip="If the post is already published in the page">Published</TableHeaderColumn>
-            <TableHeaderColumn tooltip="Time when the post is scheduled to be published">Scheduled Time</TableHeaderColumn>
-            <TableHeaderColumn tooltip="How many people have reacted to this post">Reactions</TableHeaderColumn>
-            <TableHeaderColumn tooltip="View insights on the selected post, such as how many impressions the post have">Insights</TableHeaderColumn>
-        </TableRow>
-    </TableHeader>
-}
-
-const PostTableRow = (post, openInsights) => {
-    return <TableRow key={post.id} selectable={false}>
-        <TableRowColumn>{post.message}</TableRowColumn>
-        <TableRowColumn>{post.link}</TableRowColumn>
-        <TableRowColumn>{post.created_time}</TableRowColumn>
-        <TableRowColumn>{post.is_published ? "Yes" : "No"}</TableRowColumn>
-        <TableRowColumn>{post.scheduled_publish_time}</TableRowColumn>
-        <TableRowColumn>{post.reactions.summary.total_count}</TableRowColumn>
-        <TableRowColumn><FlatButton
-            label="Insights"
-            primary={true}
-            keyboardFocused={false}
-            onTouchTap={()=> openInsights(post)}
-            /></TableRowColumn>
-    </TableRow>
-}
-
-const PostTableFooter = (onPageNext, onPagePrev) => {
-    return <TableFooter
-        adjustForCheckbox={false}
-        ><TableRow>
-            <TableRowColumn colSpan="3" style={{ textAlign: 'center' }}>
-                <FlatButton
-                    label="Prev"
-                    primary={true}
-                    keyboardFocused={false}
-                    onTouchTap={onPagePrev}
-                    />
-                <FlatButton
-                    label="Next"
-                    primary={true}
-                    keyboardFocused={false}
-                    onTouchTap={onPageNext}
-                    />
-            </TableRowColumn>
-        </TableRow>
-    </TableFooter>;
-}
-
-const CircularProgressRow = () => <Row>
-    <Col xs={6} md={6}>
-    </Col>
-    <Col xs={6} md={6}>
-        <CircularProgress size={100} thickness={5} />
-    </Col>
-</Row>;
 
 export default PagePostsView;
 
