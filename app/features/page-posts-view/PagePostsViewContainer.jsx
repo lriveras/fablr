@@ -44,6 +44,7 @@ class PagePostsViewContainer extends React.Component {
         FB.api(uri, "GET", {}, callback);
     }
     render() {
+        if(!this.props.logged) return <h1>Welcome to Fablr!</h1>;
         return PagePostsView(this.props.pgPage, 
         this.props.myPages, 
         this.props.pgPosts, 
@@ -55,8 +56,8 @@ class PagePostsViewContainer extends React.Component {
     }
 }
 
-const mapStateToProps = ({postDialogReducer, pagePostsViewReducer, insightsDialogReducer}) => {
-    return Object.assign({}, postDialogReducer, pagePostsViewReducer, insightsDialogReducer);
+const mapStateToProps = ({appBarReducer, postDialogReducer, pagePostsViewReducer, insightsDialogReducer}) => {
+    return Object.assign({}, appBarReducer, postDialogReducer, pagePostsViewReducer, insightsDialogReducer);
 };
 
 function mergeProps(stateProps, dispatchProps, ownProps) {

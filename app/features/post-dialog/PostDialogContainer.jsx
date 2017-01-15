@@ -8,6 +8,8 @@ import {
     posting, posted, toggleScheduling, postError, dismissPostError, formValidated
 } from './post-dialog-actions.js';
 import PostDialog from './PostDialog.jsx';
+import { pageSelected as reselectPostsViewPage, loadPosts } from '../page-posts-view/page-posts-view-actions.js';
+
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
@@ -18,6 +20,7 @@ class PostDialogContainer extends React.Component {
         this.onValidate = this.onValidate.bind(this);
         this.preparePost = this.preparePost.bind(this);
         this.afterPost = this.afterPost.bind(this);
+        this.reloadPostsView = this.reloadPostsView.bind(this);
     }
     onValidate() {
         let pdErrorMessage = "",
@@ -49,9 +52,21 @@ class PostDialogContainer extends React.Component {
     afterPost(response) {
         if (response && !response.error) {
             this.props.posted(response);
+            this.reloadPostsView();
         }
         else {
             this.props.postError("Oops! Something went wrong while posting to Facebook, please try again.");
+        }
+    }
+    reloadPostsView() {
+        if (this.props.pgPage && this.props.pgPage.id) {
+            const uri = `/${this.props.pgPage.id}/promotable_posts?fields=reactions.summary(true),message,link,scheduled_publish_time,is_published,created_time`;
+            this.props.reselectPostsViewPage(this.props.pgPage);
+            const callback = (response) => {
+                if (response && !response.error) this.props.loadPosts(response);
+                else this.props.postError("Oops! Something went wrong while loading the posts, please try again.");
+            }
+            FB.api(uri, "GET", {}, callback);
         }
     }
     preparePost() {
@@ -92,7 +107,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         postError: (errorMessage) => dispatch(postError(errorMessage)),
         dismissPostError: () => dispatch(dismissPostError()),
         formValidated: (pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError) =>
-            dispatch(formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError))
+            dispatch(formValidated(pdErrorMessage, pdPageError, pdTextError, pdLinkError, pdDateError, pdTimeError)),
+        loadPosts: (postsResponse) => dispatch(loadPosts(postsResponse)),
+        reselectPostsViewPage: (page) => dispatch(reselectPostsViewPage(page))
+
     };
     return Object.assign({}, stateProps, ownProps, actions, dispatchProps);
 }

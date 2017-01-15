@@ -4,6 +4,9 @@ const pagePostsViewReducer = (state, {type, pgPage, pgPosts, pgPaging})=>{
         } 
         else if(type ==='LOAD_POSTS') {
             return Object.assign({},state, {pgPaging, pgPosts});
+        } 
+        else if(type ==='CLEAN_POSTS') {
+            return Object.assign({},state, {pgPaging, pgPosts});
         }
         else{
             return Object.assign({},state,);

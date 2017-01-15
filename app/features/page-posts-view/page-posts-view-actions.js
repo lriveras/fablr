@@ -1,9 +1,9 @@
 
 const pageSelected = (page) => {
-  return {
-    type: 'PAGE_SELECTED_ON_VIEW',
-    pgPage: page 
-  }
+    return {
+        type: 'PAGE_SELECTED_ON_VIEW',
+        pgPage: page
+    }
 };
 
 const loadPosts = (postsResponse) => {
@@ -14,5 +14,13 @@ const loadPosts = (postsResponse) => {
     }
 }
 
+const cleanPosts = () => {
+    return {
+        type: 'CLEAN_POSTS',
+        pgPosts: null,
+        pgPaging: null
+    }
+}
 
-export { pageSelected, loadPosts };
+
+export { pageSelected, loadPosts, cleanPosts };
