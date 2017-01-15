@@ -1,6 +1,7 @@
 const insightsDialogReducer = {
     insightsOpen: false,
     insightsLoading: false,
+    insightsFetching: false,
     insightsData: {
         post:{},
         insightsLoadedCount: 0,

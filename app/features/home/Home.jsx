@@ -5,7 +5,7 @@ import { togglefbLoaded } from './home-actions';
 import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import FablrAppBar from '../fablr-app-bar/FablrAppBar.jsx';
-import PagePostView from '../page-posts-view/PagePostsView.jsx';
+import PagePostsViewContainer from '../page-posts-view/PagePostsViewContainer.jsx';
 import InsightsDialogContainer from '../insights-dialog/InsightsDialogContainer.jsx';
 
 
@@ -22,7 +22,7 @@ class Home extends React.Component {
     render() {
         return <div>
             <FablrAppBar/>
-            <PagePostView/>
+            <PagePostsViewContainer/>
             <InsightsDialogContainer/>
         </div>;
     }
