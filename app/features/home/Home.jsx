@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import FablrAppBar from '../fablr-app-bar/FablrAppBar.jsx';
 import PagePostView from '../page-posts-view/PagePostsView.jsx';
+import InsightsDialogContainer from '../insights-dialog/InsightsDialogContainer.jsx';
 
 
 class Home extends React.Component {
@@ -22,6 +23,7 @@ class Home extends React.Component {
         return <div>
             <FablrAppBar/>
             <PagePostView/>
+            <InsightsDialogContainer/>
         </div>;
     }
 }
