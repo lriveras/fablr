@@ -8,13 +8,9 @@ const openInsights = (post) => {
         insightCharts: {
             impressionSummary: [],
             paidVsNonPaidImpressions: [],
-            paidVsNonPaidFans: [],
             organicVsViral: [],
             engagementSummary: [],
-            consumptions: [],
-            consumptionsUnique: [],
-            negativeFeedback: [],
-            negativeFeedbackUnique: []
+            consumptions: []
         }
     }
 };

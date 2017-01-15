@@ -7,13 +7,9 @@ const insightsDialogReducer = {
         insightCharts: {
             impressionSummary:[],
             paidVsNonPaidImpressions: [],
-            paidVsNonPaidFans: [],
             organicVsViral: [],
             engagementSummary: [],
-            consumptions: [],
-            consumptionsUnique: [],
-            negativeFeedback: [],
-            negativeFeedbackUnique: []
+            consumptions: []
         }
     }
 };
