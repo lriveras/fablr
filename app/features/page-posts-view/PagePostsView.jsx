@@ -75,26 +75,26 @@ const PagePostsView = (pgPage = {}, myPages, pgPosts, pgPaging,
             enableSelectAll={false}
             >
             <TableRow>
-                <TableHeaderColumn tooltip="Post Message">Message</TableHeaderColumn>
-                <TableHeaderColumn tooltip="Post Link">Link</TableHeaderColumn>
-                <TableHeaderColumn tooltip="The time when the post was scheduled for creation">Created Time</TableHeaderColumn>
-                <TableHeaderColumn tooltip="If the post is already published in the page">Published</TableHeaderColumn>
-                <TableHeaderColumn tooltip="Time when the post is scheduled to be published">Scheduled Time</TableHeaderColumn>
-                <TableHeaderColumn tooltip="How many people have reacted to this post">Reactions</TableHeaderColumn>
-                <TableHeaderColumn tooltip="View insights on the selected post, such as how many impressions the post have">Insights</TableHeaderColumn>
+                <TableHeaderColumn width={"30%"} tooltip="Post Message">Message</TableHeaderColumn>
+                <TableHeaderColumn width={"20%"} tooltip="The time when the post was scheduled for creation">Created Time</TableHeaderColumn>
+                <TableHeaderColumn width={"10%"} tooltip="If the post is already published in the page">Published</TableHeaderColumn>
+                <TableHeaderColumn width={"20%"} tooltip="Time when the post is scheduled to be published">Scheduled Time</TableHeaderColumn>
+                <TableHeaderColumn width={"10%"} tooltip="How many people have reacted to this post">Reactions</TableHeaderColumn>
+                <TableHeaderColumn width={"10%"} tooltip="View post details">Insights</TableHeaderColumn>
             </TableRow>
         </TableHeader>
     }
 
     const PostTableRow = (post) => {
+        const createdDate = post.created_time ? new Date(post.created_time).toUTCString() : "N/A";
+        const scheduledDate = post.scheduled_publish_time ? new Date(post.scheduled_publish_time).toUTCString() : "N/A";
         return <TableRow key={post.id} selectable={false}>
-            <TableRowColumn>{post.message}</TableRowColumn>
-            <TableRowColumn>{post.link}</TableRowColumn>
-            <TableRowColumn>{post.created_time}</TableRowColumn>
-            <TableRowColumn>{post.is_published ? "Yes" : "No"}</TableRowColumn>
-            <TableRowColumn>{post.scheduled_publish_time}</TableRowColumn>
-            <TableRowColumn>{post.reactions.summary.total_count}</TableRowColumn>
-            <TableRowColumn><FlatButton
+            <TableRowColumn width={"30%"}>{post.message}</TableRowColumn>
+            <TableRowColumn width={"20%"}>{createdDate}</TableRowColumn>
+            <TableRowColumn width={"10%"}>{post.is_published ? "Yes" : "No"}</TableRowColumn>
+            <TableRowColumn width={"20%"}>{scheduledDate}</TableRowColumn>
+            <TableRowColumn width={"10%"}>{post.reactions.summary.total_count}</TableRowColumn>
+            <TableRowColumn width={"10%"}><FlatButton
                 label="Insights"
                 primary={true}
                 keyboardFocused={false}

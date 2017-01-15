@@ -27,9 +27,6 @@ let load = () => {
             <Provider store={store}>
                 <Router history={browserHistory}>
                     <Route path="/" component={Home}>
-                        <Route path="hello" component={Home}>
-
-                        </Route>
                     </Route>
                 </Router>
             </Provider>

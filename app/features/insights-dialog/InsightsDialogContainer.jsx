@@ -35,7 +35,7 @@ class InsightsDialogContainer extends React.Component {
     onConsumptionsByTypeMetricLoaded(response) {
         const values = response.data[0].values[0].value
         const metric = [];
-        if (values["other clicks"]) metric.push({ name: "Reactions, comments and shares", value: values["other clicks"] });
+        if (values["other clicks"]) metric.push({ name: "Other Clicks", value: values["other clicks"] });
         if (values["link clicks"]) metric.push({ name: "Link Clicks", value: values["link clicks"] });
         this.props.insightMetricLoaded(metric, "consumptions");
         this.onMetricLoaded();

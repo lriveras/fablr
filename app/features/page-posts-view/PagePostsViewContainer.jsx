@@ -19,7 +19,6 @@ class PagePostsViewContainer extends React.Component {
         const uri = `/${page.id}/promotable_posts?fields=reactions.summary(true),message,link,scheduled_publish_time,is_published,created_time`;
         this.props.pageSelected(page);
         const callback = (response) => {
-            console.log(response);
             if (response && !response.error) this.props.loadPosts(response);
             else this.props.postError("Oops! Something went wrong while loading the posts, please try again.");
         }
@@ -28,7 +27,6 @@ class PagePostsViewContainer extends React.Component {
     onPageNext() {
         const uri = this.props.pgPaging.next.split("v2.8")[1];
         const callback = (response) => {
-            console.log(response);
             if (response && !response.error && response.data.length > 0) this.props.loadPosts(response);
             else this.props.postError("There are no more posts to load.");
         }
@@ -37,7 +35,6 @@ class PagePostsViewContainer extends React.Component {
     onPagePrev() {
         const uri = this.props.pgPaging.previous.split("v2.8")[1];
         const callback = (response) => {
-            console.log(response);
             if (response && !response.error && response.data.length > 0) this.props.loadPosts(response);
             else this.props.postError("There are no more posts to load.");
         }
