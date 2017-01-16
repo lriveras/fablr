@@ -9,8 +9,6 @@ console.log(path.join(__dirname,'static'));
 
 var static_path = path.join(__dirname,'static');
 
-app.enable('trust proxy');
-
 app.use(compression());
 
 app.use('/', express.static(static_path, {
