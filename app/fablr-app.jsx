@@ -18,7 +18,7 @@ window.fbAsyncInit = function () {
         xfbml: true,
         version: 'v2.8'
     });
-    load();
+    
 };
 
 let load = () => {
@@ -35,3 +35,5 @@ let load = () => {
         document.getElementById('fablr-app')
     );
 }
+
+load();

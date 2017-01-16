@@ -5,15 +5,23 @@ var cors = require('cors');
 
 var app = express();
 
-console.log(path.join(__dirname,'static'));
-
 var static_path = path.join(__dirname,'static');
 
 app.use(compression());
+app.use(cors());
+app.options('*',cors());
+app.disable('etag');
 
 app.use('/', express.static(static_path, {
     maxage: 604800
 }));
+
+function nocache(req, res, next) {
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
+  next();
+}
 
 var server = app.listen(process.env.PORT || 5000, function () {
 
