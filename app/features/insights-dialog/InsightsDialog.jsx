@@ -18,6 +18,7 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
+import Divider from 'material-ui/Divider';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
     from 'material-ui/Table';
 import { fullWhite } from 'material-ui/styles/colors';
@@ -42,25 +43,26 @@ const InsightsDialog = (open, onClose, message, link,
             <h1>Post Insights</h1>
             <Row>
                 <Col xs={6} md={10} lg={10}>
-                    {message? <div><h2>Post</h2> {message} <br /><br /></div> : <div/>}
+                    {message ? <div><h2>Message</h2> {message} <br /><br /></div> : <div />}
                 </Col>
             </Row>
+            <Divider />
             <Row>
                 <Col xs={6} md={10} lg={10}>
-                    {link? <div><h2>Link</h2> <a href={link}>{link}</a> <br /><br /></div> : <div/>}
+                    {link ? <div><h2>Link</h2> <a href={link}>{link}</a> <br /><br /></div> : <div />}
                 </Col>
             </Row>
+            <Divider />
             {InsightsCharts(impressionsData, consData,
                 organicVsViralData)}
         </Dialog>
     </div>;
 }
 
-const RechartPieChartWrapper = (data, width, height, radius, innerRadius, title) =>
+const RechartPieChartWrapper = (data, width, height, radius, innerRadius) =>
     <div>
-        <h2 className={{ align: 'center' }}>{title}</h2>
         <PieChart width={width} height={height}>
-            <Pie isAnimationActive={true} data={data} cx={width * 3 / 4} cy={height / 2} outerRadius={radius} fill="#20adcd" label={title} />
+            <Pie isAnimationActive={true} data={data} cx={width * 3 / 4} cy={height / 2} outerRadius={radius} fill="#20adcd" />
             <Legend verticalAlign="middle" align="left" iconSize="18" height={36} layout="vertical" />
             <Tooltip />
         </PieChart>
@@ -70,9 +72,14 @@ const InsightsCharts = (impressionsData, consData, organicVsViralData, reachData
     const width = 500, height = 200, radius = 80, innerRadius = 10;
     return <Row>
         <Col xs={12} md={12}>
-            {impressionsData.length > 0 ? RechartPieChartWrapper(impressionsData, width, height, radius, innerRadius, "Impressions Summary") : <h3>No Impression Summary Available</h3>}<br /><br />
-            {consData.length > 0 ? RechartPieChartWrapper(consData, width, height, radius, innerRadius, "Consumptions Summary") : <h3>No Consumptions Summary Available</h3>}<br /><br />
-            {organicVsViralData.length > 0 ? RechartPieChartWrapper(organicVsViralData, width, height, radius, innerRadius, "Reach Summary") : <h3>No Reach Summary Available</h3>}
+            <h2 className={{ align: 'center' }}>{"Impressions Summary"}</h2>
+            {impressionsData.length > 0 ? RechartPieChartWrapper(impressionsData, width, height, radius, innerRadius) : <h3>No Impression Summary Available</h3>}<br /><br />
+            <Divider />
+            <h2 className={{ align: 'center' }}>{"Consumptions Summary"}</h2>
+            {consData.length > 0 ? RechartPieChartWrapper(consData, width, height, radius, innerRadius) : <h3>No Consumptions Summary Available</h3>}<br /><br />
+            <Divider />
+            <h2 className={{ align: 'center' }}>{"Reach Summary"}</h2>
+            {organicVsViralData.length > 0 ? RechartPieChartWrapper(organicVsViralData, width, height, radius, innerRadius) : <h3>No Reach Summary Available</h3>}
         </Col>
     </Row>;
 };
