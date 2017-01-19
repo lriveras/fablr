@@ -72,14 +72,14 @@ const InsightsCharts = (impressionsData, consData, organicVsViralData, reachData
     const width = 500, height = 200, radius = 80, innerRadius = 10;
     return <Row>
         <Col xs={12} md={12}>
-            <h2 className={{ align: 'center' }}>{"Impressions Summary"}</h2>
-            {impressionsData.length > 0 ? RechartPieChartWrapper(impressionsData, width, height, radius, innerRadius) : <h3>No Impression Summary Available</h3>}<br /><br />
+            <h2 className={{ align: 'center' }}>{"Paid and Non-Paid Impressions Summary"}</h2>
+            {impressionsData.length > 0 ? RechartPieChartWrapper(impressionsData, width, height, radius, innerRadius) : <h3>No Impressions Summary Available</h3>}<br /><br />
+            <Divider />
+            <h2 className={{ align: 'center' }}>{"Organic and Viral Impressions Summary"}</h2>
+            {organicVsViralData.length > 0 ? RechartPieChartWrapper(organicVsViralData, width, height, radius, innerRadius) : <h3>No Impressions Summary Available</h3>}
             <Divider />
             <h2 className={{ align: 'center' }}>{"Consumptions Summary"}</h2>
             {consData.length > 0 ? RechartPieChartWrapper(consData, width, height, radius, innerRadius) : <h3>No Consumptions Summary Available</h3>}<br /><br />
-            <Divider />
-            <h2 className={{ align: 'center' }}>{"Reach Summary"}</h2>
-            {organicVsViralData.length > 0 ? RechartPieChartWrapper(organicVsViralData, width, height, radius, innerRadius) : <h3>No Reach Summary Available</h3>}
         </Col>
     </Row>;
 };
